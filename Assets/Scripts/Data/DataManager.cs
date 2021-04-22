@@ -8,13 +8,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 public class DataManager : MonoBehaviour
 {
     public static DataManager instance;
-    public PlayerData playerData = new PlayerData();
-    public Dictionary<(int,int),LevelData> levelDict = new Dictionary<(int, int), LevelData>();
-    public string playerDataPath;
-    public string levelDataPath;
+    public PlayerData playerData;
+    
 
+    string playerDataPath;
+    string levelDataPath;
     const string PLAYERDATAFILENAME = "PlayerData.txt";
-    const string LEVELDATAFILENAME = "LevelData.txt";
 
 
     public void Setup()
@@ -29,54 +28,58 @@ public class DataManager : MonoBehaviour
         }
 
         playerDataPath = Path.Combine(Application.persistentDataPath, PLAYERDATAFILENAME);
-        levelDataPath = Path.Combine(Application.persistentDataPath, LEVELDATAFILENAME);
-
+        print("DataManager Setup");
         if (!TryLoadPlayerData(out playerData)){
             playerData = PlayerManager.instance.MakeNewPlayerData();
-            SaveCharacterData();
-        }
-        if (!TryLoadLevelData(out levelDict)){
-            levelDict = LevelManager.instance.GenerateDefaultLevelData();
-            SaveLevelData();
+            playerData.levelDict = LevelManager.instance.GenerateDefaultLevelData();
+            playerData.petDict = ItemManager.instance.GenerateDefaultPetData();
+            playerData.boardDict = ItemManager.instance.GenerateDefaultBoardData();
+            playerData.accessoryDict = ItemManager.instance.GenerateDefaultAccessoryData();
+            SavePlayerData();
         }
     }
 
 
-    public void AddCoins(int coinCount){
+    public void ChangeCoinCount(int coinCount){
         playerData.coins += coinCount;
-        SaveCharacterData();
+        SavePlayerData();
     }
-
-    public void SaveAllData(){
-        SaveCharacterData();
-        SaveLevelData();
+    public bool TryGetLevel(int worldNum, int levelNum, out LevelData levelData){
+        if (playerData.levelDict.ContainsKey((worldNum, levelNum))){
+            levelData = playerData.levelDict[(worldNum, levelNum)];
+            return true;
+        }
+        Debug.LogWarning($"DataManager.cs: World {worldNum} Level {levelNum} not found");
+        levelData = new LevelData();
+        return false;
     }
-    public void SaveCharacterData(){
+    public bool HasLevel(int worldNum, int levelNum){
+        return playerData.levelDict.ContainsKey((worldNum, levelNum));
+    }
+    public void SetLevelData(int worldNum, int levelNum, LevelData newData){
+        if (playerData.levelDict.ContainsKey((worldNum, levelNum))){
+            playerData.levelDict[(worldNum, levelNum)] = newData;
+        }
+        else {
+            playerData.levelDict.Add((worldNum, levelNum), newData);
+        }
+    }
+    public void SavePlayerData(){
         SaveData(playerDataPath, playerData);
     }
-    public void SaveLevelData(){
-        SaveData(levelDataPath, levelDict);
-    }
     public bool TryLoadPlayerData(out PlayerData outputData) {
-        outputData = LoadData<PlayerData>(levelDataPath);
+        outputData = LoadData<PlayerData>(playerDataPath);
         return outputData != null;
     }
-    public bool TryLoadLevelData(out Dictionary<(int,int),LevelData> outputData) {
-        outputData = LoadData<Dictionary<(int,int),LevelData>>(levelDataPath);
-        return outputData != null;
-    }
-
-
     void SaveData<T>(string path, T data){
         using (Stream stream = File.OpenWrite(path))
-         {    
-             BinaryFormatter formatter = new BinaryFormatter();
-             formatter.Serialize(stream, data);
-         }
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, data);
+        }
     }
     static T LoadData<T>(string path) where T : class{
         if (!File.Exists(path)){
-            print("DataManager.cs: File Not Found");
             return null;
         }
 
@@ -88,7 +91,6 @@ public class DataManager : MonoBehaviour
                 return loadedObject as T;
             }
             else {
-                print("DataManager.cs: Failed to load");
                 return null;
             }
         }
@@ -99,29 +101,38 @@ public class DataManager : MonoBehaviour
 [System.Serializable]
 public class PlayerData{
     public int coins = 0;
-    public PlayerPet currentPet;
+    public Pet currentPet;
+    public Dictionary<(int,int),LevelData> levelDict = new Dictionary<(int, int), LevelData>();
+    public Dictionary<Pet, ItemData<Pet>> petDict = new Dictionary<Pet, ItemData<Pet>>();
+    public Dictionary<Board, ItemData<Board>> boardDict = new Dictionary<Board, ItemData<Board>>();
+    public Dictionary<Accessory, ItemData<Accessory>> accessoryDict = new Dictionary<Accessory, ItemData<Accessory>>();
 }
 
 [System.Serializable]
-public enum PlayerPet {
-    Cat,
-    Dog,
-    Rabbit
+public struct ItemData<T> {
+    public T item;
+    public int coinCost;
+    public ItemState itemState;
+    public ItemData(T item, int coinCost, ItemState itemState){
+        this.item = item;
+        this.coinCost = coinCost;
+        this.itemState = itemState;
+    }
 }
+
 
 [System.Serializable]
 public struct LevelData{
+    public int world;
+    public int level;
     public bool unlocked;
     public bool beat;
     public int stars;
-    public LevelData(bool isUnlocked){
+    public LevelData(int worldNum, int levelNum, bool isUnlocked){
+        world = worldNum;
+        level = levelNum;
         unlocked = isUnlocked;
         beat = false;
         stars = 0;
-    }
-    public LevelData(int myStars){
-        unlocked = false;
-        beat = false;
-        stars = myStars;
     }
 }

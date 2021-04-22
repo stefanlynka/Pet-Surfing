@@ -14,7 +14,6 @@ public class ObstacleClearer : MonoBehaviour
     /// <param name="other">The Collision2D data associated with this collision.</param>
     void OnTriggerEnter2D(Collider2D other)
     {
-        print("collide");
         if (other.gameObject.tag == "Obstacle"){
             Destroy(other.gameObject);
         }

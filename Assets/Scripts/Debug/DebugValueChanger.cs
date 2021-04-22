@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DebugValueChanger : MonoBehaviour
 {
-    public Direction direction;
+    public DirectionUD direction;
     public static float value = 1.2f;
     public float increment = 0.0f;
 
@@ -25,7 +25,7 @@ public class DebugValueChanger : MonoBehaviour
     /// </summary>
     void OnMouseDown()
     {
-        if (direction == Direction.Up){
+        if (direction == DirectionUD.Up){
             value += increment;
         }
         else {
@@ -35,7 +35,7 @@ public class DebugValueChanger : MonoBehaviour
 
 }
 
-public enum Direction{
+public enum DirectionUD{
     Up,
     Down
 }

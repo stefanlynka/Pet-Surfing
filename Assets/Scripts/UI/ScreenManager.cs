@@ -24,6 +24,7 @@ public class ScreenManager : MonoBehaviour
         foreach(Screen screen in screens){
             if(!screenDict.ContainsKey(screen.screenName)){
                 screenDict.Add(screen.screenName, screen);
+                screen.gameObject.SetActive(false);
             }
         }
 
@@ -36,7 +37,7 @@ public class ScreenManager : MonoBehaviour
     //The last sibling gets rendered last and appears on top of other screens
     public void pushScreen(ScreenName screenName)
     {
-        print("Push: "+screenName);
+        //print("Push: "+screenName);
         if (screenDict.TryGetValue(screenName, out Screen newScreen)){
             if(screenStack.Count >0){
                 Screen oldScreen = screenStack.Peek();
@@ -59,7 +60,7 @@ public class ScreenManager : MonoBehaviour
         if(screenStack.Count != 0)
         {
             Screen oldScreen = screenStack.Pop();
-            print("Pop: "+oldScreen);
+            //print("Pop: "+oldScreen);
             GameObject screenObject = oldScreen.gameObject;
             screenObject.SetActive(false);
             screenObject.transform.SetAsFirstSibling();

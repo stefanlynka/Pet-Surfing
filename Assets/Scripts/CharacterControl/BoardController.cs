@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BoardController : MonoBehaviour
 {
-
     public BoxCollider2D myCollider;
     public PetController pet;
 
@@ -17,6 +16,7 @@ public class BoardController : MonoBehaviour
     const float MAXVELOCITY = 0.4f;
     const float MINVELOCITYFORLAUNCH = 0.0f; //0.1f;
     const float SLOWDESCENTSPEED = -0.3f;
+    const float LIFTOFFBUFFER = 0.2f;
     public float SPEEDMULTIPLIER = 1.5f;
     
     //Pet Force Equation
@@ -46,11 +46,6 @@ public class BoardController : MonoBehaviour
     float bestSpeed = 0.0f;
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
     // Update is called once per frame
     void Update()
     {
@@ -107,10 +102,14 @@ public class BoardController : MonoBehaviour
                     PutPetOnBoard();
                     AddForceToPet();
                 }
+                else if (pet.GetBottomPos() > GetBoardTop()+LIFTOFFBUFFER) {
+                    pet.SetJumping(true);
+                }
             }
         }
     }
     void PutPetOnBoard(){
+        pet.SetJumping(false);
         petOnBoard = true;
         pet.SetHeightFromBottom(GetBoardTop());
         AddForceToPet();
@@ -129,8 +128,8 @@ public class BoardController : MonoBehaviour
     }
 
     void SetPetVelocity(float newSpeed){
-        if ((newSpeed >0 && newSpeed > pet.GetVelocity()) ||
-        (newSpeed <0 && newSpeed < pet.GetVelocity())){
+        if ((newSpeed > 0 && newSpeed > pet.GetVelocity()) ||
+        (newSpeed < 0 && newSpeed < pet.GetVelocity())){
             pet.SetVelocity(newSpeed);
         }
     }

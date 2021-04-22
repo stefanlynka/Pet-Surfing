@@ -1,65 +1,58 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class LevelCard : MonoBehaviour
 {
-    public int world = 0;
-    public int level = 0;
     public TextMeshProUGUI text;
     public Image image;
     public Image[] stars = new Image[3];
     public Sprite goldStar;
     public Sprite greyStar;
-
     public Sprite unlockedSprite;
     public Sprite lockedSprite;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        LevelData levelData = LevelManager.instance.GetLevelData(world, level);
-        if (levelData.stars >= 0){
-            SetUnlocked(levelData.unlocked);
-            SetStars(levelData.stars);
-        }
-        
+    Action<LevelData> onClick;
+    LevelData levelData;    
+    
+    public void Clear(){
+        onClick = null;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void SetUnlocked(bool unlocked){
-        text.gameObject.SetActive(unlocked);
-        if(unlocked){
-            image.sprite = unlockedSprite;
-        }
-        else {
-            image.sprite = lockedSprite;
+    public void SetUnlocked(bool unlocked){
+        text?.gameObject.SetActive(unlocked);
+        if (image != null){
+            if(unlocked){
+                image.sprite = unlockedSprite;
+            }
+            else {
+                image.sprite = lockedSprite;
+            }
         }
     }
-    void SetStars(int starCount){
+    public void SetStars(int starCount){
+        if (goldStar == null || greyStar == null){
+            Debug.LogWarning("LevelCard.cs: Star sprite not found");
+            return;
+        }
         for(int i = 0; i < 3; i++){
-            stars[i].sprite = i < starCount ? goldStar : greyStar;
+            if (stars[i] != null){
+                stars[i].sprite = i < starCount ? goldStar : greyStar;
+            }
         }
     }
-
-
+    public void SetOnClick(Action<LevelData> newAction, LevelData newLevelData){
+        levelData = newLevelData;
+        onClick += newAction;
+    }
     void OnMouseUp()
     {
-        LevelData levelData = LevelManager.instance.GetLevelData(world, level);
-        if (levelData.unlocked){
-            PlayerPrefs.SetInt("World",world);
-            PlayerPrefs.SetInt("Level",level);
-            PlayerPrefs.Save();
-            SceneManager.LoadScene("World"+world.ToString());
+        if (onClick != null){
+            onClick(levelData);
         }
     }
 }

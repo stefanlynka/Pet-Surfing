@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 public class Board : MonoBehaviour
 {
     public BoxCollider2D myCollider;
@@ -104,3 +105,4 @@ public class Board : MonoBehaviour
         }
     }
 }
+*/

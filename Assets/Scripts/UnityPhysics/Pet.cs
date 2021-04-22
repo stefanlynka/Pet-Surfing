@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
 public class Pet : MonoBehaviour
 {
     public float petHeight = 0.0f;
@@ -27,3 +27,4 @@ public class Pet : MonoBehaviour
         transform.position = new Vector3(transform.position.x, bottomHeight+petHeight/2, transform.position.z);
     }
 }
+*/

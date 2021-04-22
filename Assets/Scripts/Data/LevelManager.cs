@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
+    public const int LEVELSPERWORLD = 8;
     public Level currentLevel;
     public int coinsCollectedOnThisLevel = 0;
     public int timesHitOnThisLevel = 0;
@@ -20,41 +21,41 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            print("level manager instance up and running");
             instance = this;
         }
         coinsCollectedOnThisLevel = 0;
         timesHitOnThisLevel = 0;
     }
+    /*
     public LevelData GetLevelData(int worldNum, int levelNum){
-        if (!DataManager.instance.levelDict.ContainsKey((worldNum, levelNum))){
-            print("level not found");
+        if (!DataManager.instance.HasLevel(worldNum, levelNum)){
+            print("LevelManager.cs: Level not found");
             return new LevelData(-1);
         }
-        LevelData levelData = DataManager.instance.levelDict[(worldNum,levelNum)];
+        LevelData levelData = DataManager.instance.GetLevel(worldNum,levelNum);
         return levelData;
     }
-
+    */
 
     public Dictionary<(int,int),LevelData> GenerateDefaultLevelData(){
         print("Generate default level data");
         Dictionary<(int,int),LevelData> levelData = new Dictionary<(int, int), LevelData>(){
-            {(1,1), new LevelData(true)},
-            {(1,2), new LevelData(false)},
-            {(1,3), new LevelData(false)},
-            {(1,4), new LevelData(false)},
-            {(1,5), new LevelData(false)},
-            {(1,6), new LevelData(false)},
-            {(1,7), new LevelData(false)},
-            {(1,8), new LevelData(false)},
-            {(2,1), new LevelData(false)},
-            {(2,2), new LevelData(false)},
-            {(2,3), new LevelData(false)},
-            {(2,4), new LevelData(false)},
-            {(2,5), new LevelData(false)},
-            {(2,6), new LevelData(false)},
-            {(2,7), new LevelData(false)},
-            {(2,8), new LevelData(false)},
+            {(1,1), new LevelData(1,1, true)},
+            {(1,2), new LevelData(1,2, false)},
+            {(1,3), new LevelData(1,3, false)},
+            {(1,4), new LevelData(1,4, false)},
+            {(1,5), new LevelData(1,5, false)},
+            {(1,6), new LevelData(1,6, false)},
+            {(1,7), new LevelData(1,7, false)},
+            {(1,8), new LevelData(1,8, false)},
+            {(2,1), new LevelData(2,1, false)},
+            {(2,2), new LevelData(2,2, false)},
+            {(2,3), new LevelData(2,3, false)},
+            {(2,4), new LevelData(2,4, false)},
+            {(2,5), new LevelData(2,5, false)},
+            {(2,6), new LevelData(2,6, false)},
+            {(2,7), new LevelData(2,7, false)},
+            {(2,8), new LevelData(2,8, false)},
         };
         return levelData;
     }
@@ -79,12 +80,11 @@ public class LevelManager : MonoBehaviour
 
     }
     public void FinishLevel(){
-        print("level finished");
         GameController.gameRunning = false;
         ScreenManager.instance.pushScreen(ScreenName.LEVEL_WON);
         BeatLevel(PlayerPrefs.GetInt("World"), PlayerPrefs.GetInt("Level"), GetStarsForThisLevel());
         UnlockNextLevel();
-        DataManager.instance.SaveAllData();
+        DataManager.instance.SavePlayerData();
     }
     public int GetStarsForThisLevel(){
         int stars = 1;
@@ -97,15 +97,14 @@ public class LevelManager : MonoBehaviour
         coinsCollectedOnThisLevel += coins;
     }
     public void BeatLevel(int world, int level, int stars){
-        if(DataManager.instance.levelDict.ContainsKey((world,level))){
-            LevelData newData = new LevelData();
-            newData.unlocked = true;
+        if(DataManager.instance.HasLevel(world,level)){
+            LevelData newData = new LevelData(world, level, true);
             newData.beat = true;
             newData.stars = stars;
-            DataManager.instance.levelDict[(world, level)] = newData;
+            DataManager.instance.SetLevelData(world, level, newData);
         }
-        DataManager.instance.playerData.coins += coinsCollectedOnThisLevel;
-        DataManager.instance.SaveCharacterData();
+        print("beat level");
+        DataManager.instance.ChangeCoinCount(coinsCollectedOnThisLevel);
     }
     void UnlockNextLevel(){
         (int world, int level) nextData = GetNextLevel(PlayerPrefs.GetInt("World"), PlayerPrefs.GetInt("Level"));
@@ -115,17 +114,14 @@ public class LevelManager : MonoBehaviour
     }
     void UnlockLevel(int world, int level){
         if(DoesLevelExist(world,level)){
-            LevelData newData = DataManager.instance.levelDict[(world, level)];
+            LevelData newData = DataManager.instance.playerData.levelDict[(world, level)];
             newData.unlocked = true;
-            DataManager.instance.levelDict[(world, level)] = newData;
-            DataManager.instance.SaveLevelData();
+            DataManager.instance.SetLevelData(world, level, newData);
+            DataManager.instance.SavePlayerData();
         }
     }
     public bool DoesLevelExist(int world, int level){
-        if (DataManager.instance.levelDict.ContainsKey((world,level))){
-            return true;
-        }
-        return false;
+        return DataManager.instance.HasLevel(world,level);
     }
     (int,int) GetNextLevel(int world, int level){
         if (DoesLevelExist(world, level+1)){
@@ -148,7 +144,7 @@ public class Level{
     public bool unlockedByDefault = false;
 
 
-    const int mapHeight = 10;
+    const int mapHeight = 11;
     public float speed = 0.0f;
     public int coinsOnThisLevel = 0;
     public float coinRatioForStar = 0.75f;

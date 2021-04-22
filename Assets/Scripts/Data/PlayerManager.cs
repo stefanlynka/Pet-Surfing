@@ -25,7 +25,7 @@ public class PlayerManager : MonoBehaviour
 
     public void AddCoins(int coinChange){
         DataManager.instance.playerData.coins += coinChange;
-        DataManager.instance.SaveCharacterData();
+        DataManager.instance.SavePlayerData();
     }
     public int GetPlayerCoins(){
         return DataManager.instance.playerData.coins;

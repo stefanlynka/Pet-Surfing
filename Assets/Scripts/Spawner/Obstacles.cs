@@ -43,7 +43,6 @@ public class Coin: Obstacle{
             LevelManager.instance.CollectCoins(coinValue);
         }
         base.Touch(pet);
-        print("touched coin");
         Destroy(gameObject);
     }
 }
@@ -51,25 +50,25 @@ public class Rock: Obstacle{
     int damage = 1;
     public override void Touch(PetController pet){
         base.Touch(pet);
-        print("touched rock");
         pet.TakeDamage(damage);
     }
 }
 public class LevelEnd: Obstacle{
     public override void Touch(PetController pet){
+        if (!touched){
+            LevelManager.instance.FinishLevel();
+        }
         base.Touch(pet);
-        LevelManager.instance.FinishLevel();
     }
 }
 public class Beach: LevelEnd{
     public float xOffset = 15.0f;
-    public float yOffset = 7.0f;
+    public float yOffset = 5.88f;
     public override void Startup(float x, float y, float newSpeed){
         base.Startup(x,y,newSpeed);
         SetPosition(x+xOffset, y+yOffset);
     }
     public override void Touch(PetController pet){
         base.Touch(pet);
-        print("touched Beach");
     }
 }

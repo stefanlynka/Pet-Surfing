@@ -4,25 +4,49 @@ using UnityEngine;
 
 public class PetController : MonoBehaviour
 {
+    public Animator animator;
     public float petHeight = 0.0f;
     public BoxCollider2D myCollider;
     public float forceOfGravity = 0.08f;
     public float verticalVelocity = 0.0f;
-    public int collectedCoins = 0;
-    private int health = 2;
+    public bool isJumping = false;
+
+    const float VERTICALSPEEDTOANGLE = 100.0f;
+    const int INVINCIBILITYFRAMES = 120;
+    const float PETSIZEBUFFER = 0.6f;
+    int health = 2;
+    int framesSinceDamage = 1000;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        petHeight = myCollider.size.y * transform.localScale.y;
+        petHeight = myCollider.size.y * transform.localScale.y + PETSIZEBUFFER;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        framesSinceDamage++;
+        UpdateDamageTimer();
+        UpdateAngle();
+    }
+
+    void UpdateDamageTimer(){
+        animator.SetBool("DamagedRecently", framesSinceDamage <= INVINCIBILITYFRAMES);
+    }
+    void UpdateAngle(){
+        if (isJumping){
+            Vector3 oldRot = animator.transform.eulerAngles;
+            animator.transform.eulerAngles = new Vector3(oldRot.x, oldRot.y, GetVelocity() * VERTICALSPEEDTOANGLE);
+        }
+        else {
+            Vector3 oldRot = animator.transform.eulerAngles;
+            animator.transform.eulerAngles = new Vector3(oldRot.x, oldRot.y, 0.0f);
+        }
+        //-0.3,0.3
+        //-45,45
     }
 
     public void UpdatePhysics(){
@@ -50,27 +74,24 @@ public class PetController : MonoBehaviour
     public float GetVelocity(){
         return verticalVelocity;
     }
-    public void CollectCoins(int coinCount){
-        collectedCoins += coinCount;
-        //PlayerManager.AddCoins()
-    }
     public void TakeDamage(int damage){
         LevelManager.instance.timesHitOnThisLevel++;
         health -= damage;
+        framesSinceDamage = 0;
         if(health <= 0){
             LoseLevel();
         }
     }
-    private void LoseLevel(){
-        LevelManager.instance.LoseLevel();
-        print("Level Lost");
+    public void SetJumping(bool petIsJumping){
+        isJumping = petIsJumping;
+        animator.SetBool("PetIsJumping",petIsJumping);
     }
 
-    /// <summary>
-    /// Sent when an incoming collider makes contact with this object's
-    /// collider (2D physics only).
-    /// </summary>
-    /// <param name="other">The Collision2D data associated with this collision.</param>
+    
+    private void LoseLevel(){
+        LevelManager.instance.LoseLevel();
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag == "Obstacle"){
