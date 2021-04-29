@@ -32,7 +32,7 @@ public class ShopScreen : Screen
         accessoryScrollView.SetActive(false);
         tabImage.sprite = petTabSprite;
         foreach(PetCard card in petCards){
-            card.Setup();
+            card.Setup(this);
         }
     }
     public void LoadBoardTab(){
@@ -42,7 +42,7 @@ public class ShopScreen : Screen
         accessoryScrollView.SetActive(false);
         tabImage.sprite = boardTabSprite;
         foreach(BoardCard card in boardCards){
-            card.Setup();
+            card.Setup(this);
         }
     }
     public void LoadAccessoryTab(){
@@ -52,7 +52,7 @@ public class ShopScreen : Screen
         accessoryScrollView.SetActive(true);
         tabImage.sprite = accessoryTabSprite;
         foreach(AccessoryCard card in accessoryCards){
-            card.Setup();
+            card.Setup(this);
         }
     }
     public void ReloadCurrentTab(){

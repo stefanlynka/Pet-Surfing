@@ -8,20 +8,19 @@ public class BoardCard : ShopCard
     
 
     public void TryToBuy(){
-        ItemManager.instance.TryBuyBoard(board);
+        ItemManager.instance.TryBuyItem(board);
         shopScreen.ReloadCurrentTab();
     }
     public void TryUse(){
-        ItemManager.instance.TryEquipBoard(board);
+        ItemManager.instance.TryEquipItem(board);
         shopScreen.ReloadCurrentTab();
     }
-    public void Setup(){
-        print("loading board");
-        print("item mananger:" + ItemManager.instance.name);
-        if (ItemManager.instance.TryGetBoardData(board, out ItemData<Board> data)){
+    public void Setup(ShopScreen screen){
+        if (ItemManager.instance.TryGetData(board, out ItemData<Board> data)){
             SetButtonActive(data.itemState);
             buyText.SetText(data.coinCost.ToString());
             nameText.SetText(data.item.ToString());
         }
+        shopScreen = screen;
     }
 }

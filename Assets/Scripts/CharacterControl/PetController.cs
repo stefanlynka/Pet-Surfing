@@ -10,7 +10,10 @@ public class PetController : MonoBehaviour
     public float forceOfGravity = 0.08f;
     public float verticalVelocity = 0.0f;
     public bool isJumping = false;
+    public List<AccessoryObject> accessories = new List<AccessoryObject>();
 
+    const float HEADBOBHEIGHT = 2.1f;
+    public Vector3 JUMPOFFSET = new Vector3(0.0f, 0.0f, 0.0f);
     const float VERTICALSPEEDTOANGLE = 100.0f;
     const int INVINCIBILITYFRAMES = 120;
     const float PETSIZEBUFFER = 0.6f;
@@ -99,6 +102,16 @@ public class PetController : MonoBehaviour
             if(obs != null && !obs.touched){
                 obs.Touch(this);
             }
+        }
+    }
+    public void SetHeadHeight(int stage){
+        foreach(AccessoryObject accessoryObject in accessories){
+            accessoryObject.SetBobPosition((float)stage * HEADBOBHEIGHT);
+        }
+    }
+    public void SetJumpOffset(){
+        foreach(AccessoryObject accessoryObject in accessories){
+            accessoryObject.SetJumpOffset(JUMPOFFSET);
         }
     }
 }

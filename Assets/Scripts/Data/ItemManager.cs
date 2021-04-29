@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class ItemManager : MonoBehaviour
 {
@@ -19,99 +20,219 @@ public class ItemManager : MonoBehaviour
         }
 
     }
-    public Dictionary<Pet, ItemData<Pet>> GenerateDefaultPetData(){
-        Dictionary<Pet, ItemData<Pet>> petData = new Dictionary<Pet, ItemData<Pet>>();
-        petData.Add(Pet.Cat , new ItemData<Pet>(Pet.Cat , 0, ItemState.Equipped));
-        petData.Add(Pet.Dog , new ItemData<Pet>(Pet.Dog , 0, ItemState.Unbought));
+    public List<ItemData<Pet>> GenerateDefaultPetData(){
+        List<ItemData<Pet>> petData = new List<ItemData<Pet>>();
+        petData.Add(new ItemData<Pet>(Pet.Cat , 0, ItemState.Equipped));
+        petData.Add(new ItemData<Pet>(Pet.Dog , 0, ItemState.Unbought));
         return petData;
     }
-    public Dictionary<Board, ItemData<Board>> GenerateDefaultBoardData(){
-        Dictionary<Board, ItemData<Board>> boardData = new Dictionary<Board, ItemData<Board>>();
-        boardData.Add(Board.Blue , new ItemData<Board>(Board.Blue , 0, ItemState.Equipped));
-        boardData.Add(Board.Magma, new ItemData<Board>(Board.Magma , 0, ItemState.Unbought));
-        boardData.Add(Board.Ice , new ItemData<Board>(Board.Ice , 0, ItemState.Unbought));
-        boardData.Add(Board.Lightning , new ItemData<Board>(Board.Lightning , 0, ItemState.Unbought));
-        boardData.Add(Board.Rose , new ItemData<Board>(Board.Rose , 0, ItemState.Unbought));
-        boardData.Add(Board.Galactic , new ItemData<Board>(Board.Galactic , 0, ItemState.Unbought));
+    public List<ItemData<Board>> GenerateDefaultBoardData(){
+        List<ItemData<Board>> boardData = new List<ItemData<Board>>();
+        boardData.Add(new ItemData<Board>(Board.Blue , 0, ItemState.Equipped));
+        boardData.Add(new ItemData<Board>(Board.Magma , 0, ItemState.Unbought));
+        boardData.Add(new ItemData<Board>(Board.Ice , 50, ItemState.Unbought));
+        boardData.Add(new ItemData<Board>(Board.Lightning , 50, ItemState.Unbought));
+        boardData.Add(new ItemData<Board>(Board.Rose , 50, ItemState.Unbought));
+        boardData.Add(new ItemData<Board>(Board.Galactic , 100, ItemState.Unbought));
         return boardData;
     }
-    public Dictionary<Accessory, ItemData<Accessory>> GenerateDefaultAccessoryData(){
-        Dictionary<Accessory, ItemData<Accessory>> accessoryData = new Dictionary<Accessory, ItemData<Accessory>>();
+    public List<ItemData<Accessory>> GenerateDefaultAccessoryData(){
+        List<ItemData<Accessory>> accessoryData = new List<ItemData<Accessory>>();
+        accessoryData.Add(new ItemData<Accessory>(Accessory.Crown, 200, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.Monocle, 0, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.Moustache, 25, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.PartyHat, 25, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.PirateHat, 100, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.Shades, 0, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.Sombrero, 100, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.Tiara, 200, ItemState.Unbought));
+        accessoryData.Add( new ItemData<Accessory>(Accessory.TopHat, 75, ItemState.Unbought));
         return accessoryData;
     }
-    public bool TryGetPetData(Pet pet, out ItemData<Pet> data){
-        if (DataManager.instance.playerData.petDict.TryGetValue(pet, out ItemData<Pet> foundPet)){
-            data = foundPet;
-            return true;
+    private List<ItemData<T>> GetList<T>(T item){
+        List<ItemData<T>> itemList = new List<ItemData<T>>();
+        if (item is Pet) {
+            return DataManager.instance.playerData.petList.Cast<ItemData<T>>().ToList();
         }
-        data = new ItemData<Pet>();
-        return false;
+        else if (item is Board){
+            return DataManager.instance.playerData.boardList.Cast<ItemData<T>>().ToList();
+        }
+        else if (item is Accessory){
+            return DataManager.instance.playerData.accessoryList.Cast<ItemData<T>>().ToList();
+        }
+        return null;
     }
-    public void TryBuyPet(Pet pet){
-        if (TryGetPetData(pet, out ItemData<Pet> data) && data.itemState == ItemState.Unbought){
+
+    public void TryBuyItem<T>(T item){
+        if (TryGetData(item, out ItemData<T> data) && data.itemState == ItemState.Unbought){
             int coinCost = data.coinCost;
             if (DataManager.instance.playerData.coins >= coinCost){
                 DataManager.instance.playerData.coins -= coinCost;
-                data.itemState = ItemState.Bought;
-                DataManager.instance.playerData.petDict[pet] = data;
+                UnequipItems(item);
+                data.itemState = ItemState.Equipped; 
+                TrySetData(data);
             }
         }
     }
-    public void TryEquipPet(Pet pet){
-        if (TryGetPetData(pet, out ItemData<Pet> data) && data.itemState == ItemState.Bought){
-            data.itemState = ItemState.Equipped;
-            DataManager.instance.playerData.petDict[pet] = data;
+    public void UnequipItems<T>(T item){
+        if (!(item is Accessory)){
+            List<ItemData<T>> itemList = GetList(item);
+            if (itemList != null){
+                for(int i = 0; i < itemList.Count; i++){
+                    ItemData<T> itemData = itemList[i];
+                    if (itemData.itemState == ItemState.Equipped){
+                        itemData.itemState = ItemState.Bought;
+                        itemList[i] = itemData;
+                        TrySetData(itemData);
+                    }
+                }
+            }
         }
     }
-    public bool TryGetBoardData(Board board, out ItemData<Board> data){
-        print("boardDict: "+DataManager.instance.playerData.boardDict);
-        if (DataManager.instance.playerData.boardDict.TryGetValue(board, out ItemData<Board> foundBoard)){
-            data =  foundBoard;
-            return true;
+    public void UnequipCurrentItem<T>(T item){
+        if (item is Accessory){
+            List<ItemData<T>> itemList = GetList(item);
+            if (itemList != null){
+                for(int i = 0; i < itemList.Count; i++){
+                    ItemData<T> itemData = itemList[i];
+                    if (EqualityComparer<T>.Default.Equals(itemData.item, item) && itemData.itemState == ItemState.Equipped){
+                        itemData.itemState = ItemState.Bought;
+                        itemList[i] = itemData;
+                        TrySetData(itemData);
+                    }
+                }
+            }
         }
-        data = new ItemData<Board>();
+    }
+    public void TryEquipItem<T>(T item){
+        if (TryGetData(item, out ItemData<T> data) && data.itemState == ItemState.Bought){
+            UnequipItems(item);
+            data.itemState = ItemState.Equipped;
+            TrySetData(data);
+        }
+    }
+    public bool TryGetData<T>(T entry, out ItemData<T> data){
+        List<ItemData<T>> itemList = GetList(entry);
+        if (itemList != null){
+            foreach(ItemData<T> itemData in itemList){
+                if(EqualityComparer<T>.Default.Equals(itemData.item, entry)){
+                    data = itemData;
+                    return true;
+                }
+            }
+        }
+        
+        data = new ItemData<T>();
         return false;
     }
-    public void TryBuyBoard(Board board){
-        if (TryGetBoardData(board, out ItemData<Board> data) && data.itemState == ItemState.Unbought){
-            int coinCost = data.coinCost;
-            if (DataManager.instance.playerData.coins >= coinCost){
-                DataManager.instance.playerData.coins -= coinCost;
-                data.itemState = ItemState.Bought;
-                DataManager.instance.playerData.boardDict[board] = data;
+    public bool TrySetData<T>(ItemData<T> data){
+        T desiredItem = data.item;
+        if (desiredItem is Pet){
+            List<ItemData<T>> itemList = DataManager.instance.playerData.petList.Cast<ItemData<T>>().ToList();
+            for(int i = 0; i < itemList.Count; i++){
+                ItemData<T> itemData = itemList[i];
+                if (EqualityComparer<T>.Default.Equals(itemData.item, desiredItem)){
+                    DataManager.instance.playerData.petList[i] = (ItemData<Pet>)(object)data;
+                    DataManager.instance.SavePlayerData();
+                    return true;
+                }
             }
         }
-    }
-    public void TryEquipBoard(Board board){
-        if (TryGetBoardData(board, out ItemData<Board> data) && data.itemState == ItemState.Bought){
-            data.itemState = ItemState.Equipped;
-            DataManager.instance.playerData.boardDict[board] = data;
+        if (desiredItem is Board){
+            List<ItemData<T>> itemList = DataManager.instance.playerData.boardList.Cast<ItemData<T>>().ToList();
+            for(int i = 0; i < itemList.Count; i++){
+                ItemData<T> itemData = itemList[i];
+                if (EqualityComparer<T>.Default.Equals(itemData.item, desiredItem)){
+                    DataManager.instance.playerData.boardList[i] = (ItemData<Board>)(object)data;
+                    DataManager.instance.SavePlayerData();
+                    return true;
+                }
+            }
         }
-    }
-    public bool TryGetAccessoryData(Accessory accessory, out ItemData<Accessory> data){
-        if (DataManager.instance.playerData.accessoryDict.TryGetValue(accessory, out ItemData<Accessory> foundAccessory)){
-            data = foundAccessory;
-            return true;
+        if (desiredItem is Accessory){
+            List<ItemData<T>> itemList = DataManager.instance.playerData.accessoryList.Cast<ItemData<T>>().ToList();
+            for(int i = 0; i < itemList.Count; i++){
+                ItemData<T> itemData = itemList[i];
+                if (EqualityComparer<T>.Default.Equals(itemData.item, desiredItem)){
+                    DataManager.instance.playerData.accessoryList[i] = (ItemData<Accessory>)(object)data;
+                    DataManager.instance.SavePlayerData();
+                    return true;
+                }
+            }
         }
-        data = new ItemData<Accessory>();
         return false;
     }
-    public void TryBuyAccessory(Accessory accessory){
-        if (TryGetAccessoryData(accessory, out ItemData<Accessory> data) && data.itemState == ItemState.Unbought){
-            int coinCost = data.coinCost;
-            if (DataManager.instance.playerData.coins >= coinCost){
-                DataManager.instance.playerData.coins -= coinCost;
-                data.itemState = ItemState.Bought;
-                DataManager.instance.playerData.accessoryDict[accessory] = data;
+    public Pet GetCurrentPet(){
+        foreach(ItemData<Pet> petData in DataManager.instance.playerData.petList){
+            if (petData.itemState == ItemState.Equipped) return petData.item;
+        }
+        return new Pet();
+    }
+    public Board GetCurrentBoard(){
+        foreach(ItemData<Board> boardData in DataManager.instance.playerData.boardList){
+            if (boardData.itemState == ItemState.Equipped) return boardData.item;
+        }
+        return new Board();
+    }
+    public List<Accessory> GetCurrentAccessories(){
+        List<Accessory> accessories = new List<Accessory>();
+        foreach(ItemData<Accessory> accessoryData in DataManager.instance.playerData.accessoryList){
+            if (accessoryData.itemState == ItemState.Equipped){
+                accessories.Add(accessoryData.item);
             }
         }
+        return accessories;
     }
-    public void TryEquipAccessory(Accessory accessory){
-        if (TryGetAccessoryData(accessory, out ItemData<Accessory> data) && data.itemState == ItemState.Bought){
-            data.itemState = ItemState.Equipped;
-            DataManager.instance.playerData.accessoryDict[accessory] = data;
+
+    public void UnlockEverything(){
+        for(int i = DataManager.instance.playerData.petList.Count-1; i>=0; i--){
+            ItemData<Pet> petData = DataManager.instance.playerData.petList[i];
+            TrySetData(new ItemData<Pet>(petData.item, 0, ItemState.Bought));
+        }
+        for(int i = DataManager.instance.playerData.boardList.Count-1; i>=0; i--){
+            ItemData<Board> boardData = DataManager.instance.playerData.boardList[i];
+            TrySetData(new ItemData<Board>(boardData.item, 0, ItemState.Bought));
+        }
+        for(int i = DataManager.instance.playerData.accessoryList.Count-1; i>=0; i--){
+            ItemData<Accessory> accessoryData = DataManager.instance.playerData.accessoryList[i];
+            TrySetData(new ItemData<Accessory>(accessoryData.item, 0, ItemState.Bought));
         }
     }
+    /*
+    public bool TrySetData(ItemData<Pet> data){
+        Pet desiredItem = data.item;
+        ref List<ItemData<Pet>> itemList = ref DataManager.instance.GetPetList();
+        for(int i = 0; i < itemList.Count; i++){
+            if (desiredItem == itemList[i].item){
+                itemList[i] = data;
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool TrySetData(ItemData<Board> data){
+        Board desiredItem = data.item;
+        ref List<ItemData<Board>> itemList = ref DataManager.instance.GetBoardList();
+        for(int i = 0; i < itemList.Count; i++){
+            if (desiredItem == itemList[i].item){
+                itemList[i] = data;
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool TrySetData(ItemData<Accessory> data){
+        Accessory desiredItem = data.item;
+        ref List<ItemData<Accessory>> itemList = ref DataManager.instance.GetAccessoryList();
+        for(int i = 0; i < itemList.Count; i++){
+            if (desiredItem == itemList[i].item){
+                itemList[i] = data;
+                return true;
+            }
+        }
+        return false;
+    }
+    */
 }
 
 [System.Serializable]

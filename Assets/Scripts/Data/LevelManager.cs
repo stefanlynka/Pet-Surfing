@@ -38,7 +38,6 @@ public class LevelManager : MonoBehaviour
     */
 
     public Dictionary<(int,int),LevelData> GenerateDefaultLevelData(){
-        print("Generate default level data");
         Dictionary<(int,int),LevelData> levelData = new Dictionary<(int, int), LevelData>(){
             {(1,1), new LevelData(1,1, true)},
             {(1,2), new LevelData(1,2, false)},
@@ -103,7 +102,6 @@ public class LevelManager : MonoBehaviour
             newData.stars = stars;
             DataManager.instance.SetLevelData(world, level, newData);
         }
-        print("beat level");
         DataManager.instance.ChangeCoinCount(coinsCollectedOnThisLevel);
     }
     void UnlockNextLevel(){

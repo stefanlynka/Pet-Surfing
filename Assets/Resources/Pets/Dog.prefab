@@ -7,6 +7,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3382689635964446264, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: bd558dfa148b06845973ac3165fa6d1b, type: 2}
     - target: {fileID: 3651931149379343848, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -33,6 +38,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 276d32e3b09d41a45bfb47af614c24f3,
         type: 3}
+    - target: {fileID: 3651931150919863322, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863322, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863322, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 60.01711
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863322, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 49.350002
+      objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
       propertyPath: m_RootOrder
@@ -40,13 +65,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.025
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.025
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.31
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.27
+      value: 4.29
       objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
@@ -88,10 +123,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863324, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 1969284661630414880}
+    - target: {fileID: 3651931150919863324, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: JUMPOFFSET.x
+      value: 5.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863324, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: JUMPOFFSET.y
+      value: -1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863325, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
       propertyPath: m_Name
       value: Dog
       objectReference: {fileID: 0}
+    - target: {fileID: 5465291222127568440, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 276d32e3b09d41a45bfb47af614c24f3,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e19518bbe0dd76c448d078f4e5ba3194, type: 3}
+--- !u!95 &1969284661630414880 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3382689635964446264, guid: e19518bbe0dd76c448d078f4e5ba3194,
+    type: 3}
+  m_PrefabInstance: {fileID: 3865768235401303576}
+  m_PrefabAsset: {fileID: 0}

@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
 
 public class DataManager : MonoBehaviour
 {
@@ -28,15 +29,33 @@ public class DataManager : MonoBehaviour
         }
 
         playerDataPath = Path.Combine(Application.persistentDataPath, PLAYERDATAFILENAME);
-        print("DataManager Setup");
         if (!TryLoadPlayerData(out playerData)){
             playerData = PlayerManager.instance.MakeNewPlayerData();
             playerData.levelDict = LevelManager.instance.GenerateDefaultLevelData();
-            playerData.petDict = ItemManager.instance.GenerateDefaultPetData();
-            playerData.boardDict = ItemManager.instance.GenerateDefaultBoardData();
-            playerData.accessoryDict = ItemManager.instance.GenerateDefaultAccessoryData();
+            playerData.petList = ItemManager.instance.GenerateDefaultPetData();
+            playerData.boardList = ItemManager.instance.GenerateDefaultBoardData();
+            playerData.accessoryList = ItemManager.instance.GenerateDefaultAccessoryData();
             SavePlayerData();
         }
+    }
+
+    public void DeleteAndResetData(){
+        playerDataPath = Path.Combine(Application.persistentDataPath, PLAYERDATAFILENAME);
+        if (File.Exists(playerDataPath)){
+            File.Delete(playerDataPath);
+            Setup();
+        }
+    }
+
+
+    public ref List<ItemData<Pet>> GetPetList(){
+        return ref DataManager.instance.playerData.petList;
+    }
+    public ref List<ItemData<Board>> GetBoardList(){
+        return ref DataManager.instance.playerData.boardList;
+    }
+    public ref List<ItemData<Accessory>> GetAccessoryList(){
+        return ref DataManager.instance.playerData.accessoryList;
     }
 
 
@@ -101,11 +120,10 @@ public class DataManager : MonoBehaviour
 [System.Serializable]
 public class PlayerData{
     public int coins = 0;
-    public Pet currentPet;
     public Dictionary<(int,int),LevelData> levelDict = new Dictionary<(int, int), LevelData>();
-    public Dictionary<Pet, ItemData<Pet>> petDict = new Dictionary<Pet, ItemData<Pet>>();
-    public Dictionary<Board, ItemData<Board>> boardDict = new Dictionary<Board, ItemData<Board>>();
-    public Dictionary<Accessory, ItemData<Accessory>> accessoryDict = new Dictionary<Accessory, ItemData<Accessory>>();
+    public List<ItemData<Pet>> petList = new List<ItemData<Pet>>();
+    public List<ItemData<Board>> boardList = new List<ItemData<Board>>();
+    public List<ItemData<Accessory>> accessoryList = new List<ItemData<Accessory>>();
 }
 
 [System.Serializable]

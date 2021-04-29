@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 public class PetCard : ShopCard
 {
@@ -10,19 +8,20 @@ public class PetCard : ShopCard
     
 
     public void TryToBuy(){
-        ItemManager.instance.TryBuyPet(pet);
+        ItemManager.instance.TryBuyItem(pet);
         shopScreen.ReloadCurrentTab();
     }
     public void TryUse(){
-        ItemManager.instance.TryEquipPet(pet);
+        ItemManager.instance.TryEquipItem(pet);
         shopScreen.ReloadCurrentTab();
     }
-    public void Setup(){
-        if (ItemManager.instance.TryGetPetData(pet, out ItemData<Pet> data)){
+    public void Setup(ShopScreen screen){
+        if (ItemManager.instance.TryGetData(pet, out ItemData<Pet> data)){
             SetButtonActive(data.itemState);
             buyText.SetText(data.coinCost.ToString());
             nameText.SetText(data.item.ToString());
         }
+        shopScreen = screen;
     }
 }
 

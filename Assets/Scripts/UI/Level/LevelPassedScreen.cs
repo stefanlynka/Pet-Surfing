@@ -31,8 +31,6 @@ public class LevelPassedScreen : Screen
         LevelManager.instance.LoadNextLevel();
     }
     public void Setup(int starCount, int coinCount){
-        print("StarCount: "+starCount);
-        print("CoinCount: "+coinCount);
         for(int i = 0; i < 3; i++){
             stars[i].sprite = i < starCount ? goldStar : greyStar;
         }
