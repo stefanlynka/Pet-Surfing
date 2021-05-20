@@ -23,7 +23,12 @@ public class ItemManager : MonoBehaviour
     public List<ItemData<Pet>> GenerateDefaultPetData(){
         List<ItemData<Pet>> petData = new List<ItemData<Pet>>();
         petData.Add(new ItemData<Pet>(Pet.Cat , 0, ItemState.Equipped));
-        petData.Add(new ItemData<Pet>(Pet.Dog , 0, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Dog , 50, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Bunny , 50, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Fox , 50, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Lion , 100, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Unicorn , 200, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Wolf , 100, ItemState.Unbought));
         return petData;
     }
     public List<ItemData<Board>> GenerateDefaultBoardData(){
@@ -246,7 +251,11 @@ public enum ItemState{
 public enum Pet {
     Cat,
     Dog,
-    Rabbit
+    Bunny,
+    Fox,
+    Lion,
+    Unicorn,
+    Wolf
 }
 [System.Serializable]
 public enum Board{

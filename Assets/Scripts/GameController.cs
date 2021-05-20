@@ -78,12 +78,14 @@ public class GameController : MonoBehaviour
         board = boardObject.GetComponent<BoardController>();
     }
     void LoadAccessories(List<Accessory> accessories){
+        Pet currentPet = ItemManager.instance.GetCurrentPet();
         foreach(Accessory accessory in accessories){
             string accessoryName = accessory.ToString();
             GameObject accessoryPrefab = Resources.Load<GameObject>(ACCESSORYPATH + accessoryName);
             if (accessoryPrefab != null){
                 GameObject accessoryObject = Instantiate(accessoryPrefab, pet.transform);
                 if (accessoryObject.TryGetComponent<AccessoryObject>(out AccessoryObject accessoryScript)){
+                    accessoryScript.Setup(currentPet);  
                     pet.accessories.Add(accessoryScript);
                 }
             }

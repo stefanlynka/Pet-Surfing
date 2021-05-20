@@ -12,11 +12,12 @@ public class PetController : MonoBehaviour
     public bool isJumping = false;
     public List<AccessoryObject> accessories = new List<AccessoryObject>();
 
-    const float HEADBOBHEIGHT = 2.1f;
-    public Vector3 JUMPOFFSET = new Vector3(0.0f, 0.0f, 0.0f);
+    public float headBobHeight = 1.05f;
+    public Vector3 jumpOffset = new Vector3(0.0f, 0.0f, 0.0f);
     const float VERTICALSPEEDTOANGLE = 100.0f;
     const int INVINCIBILITYFRAMES = 120;
     const float PETSIZEBUFFER = 0.6f;
+    const float STARTINGX = 0.0f;
     int health = 2;
     int framesSinceDamage = 1000;
     
@@ -25,7 +26,9 @@ public class PetController : MonoBehaviour
     void Start()
     {
         petHeight = myCollider.size.y * transform.localScale.y + PETSIZEBUFFER;
-
+        Vector3 newPos = transform.position;
+        newPos.x = STARTINGX;
+        transform.position = newPos;
     }
 
     // Update is called once per frame
@@ -106,12 +109,12 @@ public class PetController : MonoBehaviour
     }
     public void SetHeadHeight(int stage){
         foreach(AccessoryObject accessoryObject in accessories){
-            accessoryObject.SetBobPosition((float)stage * HEADBOBHEIGHT);
+            accessoryObject.SetBobPosition((float)stage * headBobHeight);
         }
     }
     public void SetJumpOffset(){
         foreach(AccessoryObject accessoryObject in accessories){
-            accessoryObject.SetJumpOffset(JUMPOFFSET);
+            accessoryObject.SetJumpOffset(jumpOffset);
         }
     }
 }

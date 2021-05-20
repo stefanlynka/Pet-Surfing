@@ -14,13 +14,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -8.53
       objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.41
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863323, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
@@ -62,6 +72,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3651931150919863324, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 2507711335172685}
+    - target: {fileID: 3651931150919863324, guid: e19518bbe0dd76c448d078f4e5ba3194,
+        type: 3}
+      propertyPath: headBobHeight
+      value: 0.017
+      objectReference: {fileID: 0}
     - target: {fileID: 3651931150919863325, guid: e19518bbe0dd76c448d078f4e5ba3194,
         type: 3}
       propertyPath: m_Name
@@ -74,3 +94,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e19518bbe0dd76c448d078f4e5ba3194, type: 3}
+--- !u!95 &2507711335172685 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3382689635964446264, guid: e19518bbe0dd76c448d078f4e5ba3194,
+    type: 3}
+  m_PrefabInstance: {fileID: 3384827361334357109}
+  m_PrefabAsset: {fileID: 0}
