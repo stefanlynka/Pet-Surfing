@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class LevelSpawner : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class LevelSpawner : MonoBehaviour
 
     int timer = 0;
     bool levelStarted = false;
+    string PREFABPATH = "Obstacles/";
     //float obstacleOffset = 5.0f;
 
 
@@ -28,6 +30,7 @@ public class LevelSpawner : MonoBehaviour
     }
 
     public void SpawnLevel(Level newLevel){
+        /*
         Level.MakeObstacleDelegate[,] map = newLevel.map;
         for(int i = 0; i< map.GetLength(0); i++){
             for(int j = 0; j< map.GetLength(1); j++){
@@ -39,11 +42,33 @@ public class LevelSpawner : MonoBehaviour
                         if (obs is Coin){
                             LevelManager.instance.currentLevel.coinsOnThisLevel++;
                         }
-                        //;
                     }                    
                 }
             }
         }
+        */
+        //
+        foreach(ObstacleData data in newLevel.obstacleData){
+            var obs = GenerateObstacle(data.obstacle);
+            obs?.Startup(data.x, data.y, newLevel.speed);
+            //GenerateObstacle(data.obstacle);
+        }
+    }
+    Obstacle GenerateObstacle(Type obstacleType){
+        string obstacleName = obstacleType.ToString();
+        GameObject obstacleObject = LoadObstacle(obstacleName);
+        if (obstacleObject != null){
+            Obstacle obstacle = (Obstacle)obstacleObject.AddComponent(obstacleType);
+            if (obstacle != null) {
+                return obstacle;
+            }
+        }
+        return null;
+    }
+    GameObject LoadObstacle(string obstacleName){
+        GameObject obstaclePrefab = Resources.Load<GameObject>(PREFABPATH + obstacleName);
+        GameObject obstacleObject = Instantiate(obstaclePrefab);
+        return obstacleObject;
     }
     void ProgressLevel(){}
 }

@@ -23,12 +23,22 @@ public class ItemManager : MonoBehaviour
     public List<ItemData<Pet>> GenerateDefaultPetData(){
         List<ItemData<Pet>> petData = new List<ItemData<Pet>>();
         petData.Add(new ItemData<Pet>(Pet.Cat , 0, ItemState.Equipped));
-        petData.Add(new ItemData<Pet>(Pet.Dog , 50, ItemState.Unbought));
         petData.Add(new ItemData<Pet>(Pet.Bunny , 50, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Dog , 50, ItemState.Unbought));
         petData.Add(new ItemData<Pet>(Pet.Fox , 50, ItemState.Unbought));
-        petData.Add(new ItemData<Pet>(Pet.Lion , 100, ItemState.Unbought));
-        petData.Add(new ItemData<Pet>(Pet.Unicorn , 200, ItemState.Unbought));
+
+        
+        petData.Add(new ItemData<Pet>(Pet.Raccoon , 100, ItemState.Unbought));
         petData.Add(new ItemData<Pet>(Pet.Wolf , 100, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Goat , 100, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Elephant , 100, ItemState.Unbought));
+
+        petData.Add(new ItemData<Pet>(Pet.Lion , 150, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Panda , 150, ItemState.Unbought));
+
+        petData.Add(new ItemData<Pet>(Pet.Unicorn , 200, ItemState.Unbought));
+        petData.Add(new ItemData<Pet>(Pet.Dragon , 200, ItemState.Unbought));
+        
         return petData;
     }
     public List<ItemData<Board>> GenerateDefaultBoardData(){
@@ -249,11 +259,16 @@ public enum ItemState{
 
 [System.Serializable]
 public enum Pet {
+    Bunny,
     Cat,
     Dog,
-    Bunny,
+    Dragon,
+    Elephant,
     Fox,
+    Goat,
     Lion,
+    Panda,
+    Raccoon,
     Unicorn,
     Wolf
 }

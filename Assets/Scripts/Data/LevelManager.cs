@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class LevelManager : MonoBehaviour
 {
@@ -148,10 +149,12 @@ public class Level{
     public float coinRatioForStar = 0.75f;
 
 
-    public delegate Obstacle MakeObstacleDelegate();
-    public MakeObstacleDelegate[,] map;
-    public Level(int mapLength, float mapSpeed){
-        map = new MakeObstacleDelegate[mapLength, mapHeight];
+    //public delegate Obstacle MakeObstacleDelegate();
+    //public MakeObstacleDelegate[,] map;
+    public List<ObstacleData> obstacleData = new List<ObstacleData>();
+
+    public Level(float mapSpeed){
+        //map = new MakeObstacleDelegate[mapLength, mapHeight];
         speed = mapSpeed;
     }
     public Level(int world, int level, bool unlocked = false){
@@ -159,7 +162,20 @@ public class Level{
         levelNum = level;
         unlockedByDefault = unlocked;
     }
-    public void AddObstacle(int x, int y, MakeObstacleDelegate action){
-        map[x,y] = action;
+    public void AddObstacle(float x, float y, Type obstacle){
+        obstacleData.Add(new ObstacleData(obstacle, x, y));
+        //obstacle.SetCollisionPosition(x,y);
+        //obstacles.Add(obstacle);
+        //map[x,y] = action;
+    }
+}
+public struct ObstacleData{
+    public Type obstacle;
+    public float x;
+    public float y;
+    public ObstacleData(Type obstacle, float x, float y){
+        this.obstacle = obstacle;
+        this.x = x;
+        this.y = y;
     }
 }

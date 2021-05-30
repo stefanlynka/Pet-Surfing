@@ -4,8 +4,9 @@ using UnityEngine;
 
 public abstract class Obstacle : MonoBehaviour{
     public bool touched = false;
+    public static float obstacleZ = 0.0f;
 
-    protected Vector3 collisionPosition = new Vector3(0.0f,0.0f,0.0f);
+    protected Vector3 collisionPosition = new Vector3(0.0f,0.0f,obstacleZ);
     protected float levelSpeed = 0.0f;
     protected bool active = false;
     protected string prefabPath = "Obstacles/";
@@ -16,15 +17,18 @@ public abstract class Obstacle : MonoBehaviour{
             transform.Translate(new Vector3(-levelSpeed, 0.0f, 0.0f));
         }
     }
-    public virtual void Setup(){}
+    //public virtual void Setup(){}
     public virtual void Startup(float x, float y, float newSpeed){
         levelSpeed = newSpeed;
         SetPosition(x, y);
-        collisionPosition = new Vector3(x, y, 0.0f);
+        collisionPosition = new Vector3(x, y, obstacleZ);
         active = true;
     }
     public void SetPosition(float x, float y){
-        transform.position = new Vector3(x,y,0.0f);
+        transform.position = new Vector3(x,y,obstacleZ);
+    }
+    public void SetCollisionPosition(float x, float y){
+        collisionPosition = new Vector3(x,y,obstacleZ);
     }
     public virtual void Touch(PetController pet){
         touched = true;

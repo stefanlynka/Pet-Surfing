@@ -9,7 +9,7 @@ public class LevelGenerator : MonoBehaviour
 
     Level currentLevel;
     
-    string PREFABPATH = "Obstacles/";
+    
     
     // Start is called before the first frame update
     void Start()
@@ -54,26 +54,16 @@ public class LevelGenerator : MonoBehaviour
     }
 
 
-    Component GenerateObstacle(Type obstacleType){
-        string obstacleName = obstacleType.ToString();
-        GameObject obstacleObject = LoadObstacle(obstacleName);
-        if (obstacleObject != null){
-            Component obstacle = (Obstacle)obstacleObject.AddComponent(obstacleType);
-            if (obstacle != null) {
-                return obstacle;
-            }
-        }
-        return null;
-    }
-    GameObject LoadObstacle(string obstacleName){
-        GameObject obstaclePrefab = Resources.Load<GameObject>(PREFABPATH + obstacleName);
-        GameObject obstacleObject = Instantiate(obstaclePrefab);
-        return obstacleObject;
-    }
+
 
     Level MakeLevel1(){
-        Level newLevel = new Level(100, 0.08f);
+        Level newLevel = new Level(0.08f);
 
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        /*
         newLevel.AddObstacle(20, 3, () => {
             Coin obs = (Coin)GenerateObstacle(typeof(Coin));
             obs?.Setup();
@@ -158,10 +148,83 @@ public class LevelGenerator : MonoBehaviour
             obs?.Setup();
             return obs;
         });
+        */
+        return newLevel;
+    }
+    Level MakeLevel2(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        
+        return newLevel;
+    }
+    Level MakeLevel3(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        
+        return newLevel;
+    }
+    Level MakeLevel4(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        
+        return newLevel;
+    }
+    Level MakeLevel5(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        
+        return newLevel;
+    }
+    Level MakeLevel6(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        
+        return newLevel;
+    }
+    Level MakeLevel7(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        
+        return newLevel;
+    }
+    Level MakeLevel8(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+        
+        return newLevel;
+    }
+    Level MakeLevelDefault(){
+        Level newLevel = new Level(0.04f);
+        
+        for(int i =0; i< 10; i++){
+            newLevel.AddObstacle(20, i, typeof(Coin));
+        }
+
         return newLevel;
     }
 
-
+/*
     Level MakeLevel2(){
         Level newLevel = new Level(200, 0.1f);
 
@@ -1178,25 +1241,8 @@ public class LevelGenerator : MonoBehaviour
         });
         return newLevel;
     }
-    Level MakeLevelDefault(){
-        Level newLevel = new Level(100, 0.04f);
-        newLevel.AddObstacle(5, 5, () => {
-            Coin obs = (Coin)GenerateObstacle(typeof(Coin));
-            obs?.Setup();
-            return obs;
-        });
-        newLevel.AddObstacle(10, 3, () => {
-            Rock obs = (Rock)GenerateObstacle(typeof(Rock));
-            obs?.Setup();
-            return obs;
-        });
-        newLevel.AddObstacle(30, 0, () => {
-            Beach obs = (Beach)GenerateObstacle(typeof(Beach));
-            obs?.Setup();
-            return obs;
-        });
-        return newLevel;
-    }
+
+    */
 }
 
 
