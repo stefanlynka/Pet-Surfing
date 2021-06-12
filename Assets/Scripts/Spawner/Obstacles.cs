@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public abstract class Obstacle : MonoBehaviour{
     public bool touched = false;
@@ -14,7 +15,10 @@ public abstract class Obstacle : MonoBehaviour{
     public virtual void Update()
     {
         if(active && GameController.gameRunning){
-            transform.Translate(new Vector3(-levelSpeed, 0.0f, 0.0f));
+            //transform.Translate(new Vector3(-levelSpeed, 0.0f, 0.0f));
+            Vector3 oldPos = transform.localPosition;
+            oldPos.x -= levelSpeed;
+            transform.localPosition = oldPos;
         }
     }
     //public virtual void Setup(){}
@@ -50,11 +54,154 @@ public class Coin: Obstacle{
         Destroy(gameObject);
     }
 }
-public class Rock: Obstacle{
-    int damage = 1;
+public class DamageObstacle : Obstacle{
+    protected int damage = 1;
     public override void Touch(PetController pet){
         base.Touch(pet);
         pet.TakeDamage(damage);
+    }
+}
+public class Rock: DamageObstacle{
+}
+public class Shark: DamageObstacle{
+}
+public class Cactus: DamageObstacle{
+}
+public class Seagull: DamageObstacle{
+    //Faster to left
+    float speed = 0.05f;
+    public override void Update(){
+        if(active && GameController.gameRunning){
+            Vector3 oldPos = transform.localPosition;
+            oldPos.x -= speed;
+            transform.localPosition = oldPos;
+        }
+    }
+}
+
+public class Bat: DamageObstacle{
+    // Left and right
+    float leftSpeed = -0.03f;
+    float rightSpeed = 0.13f;
+    bool movingLeft = true;
+    int switchTimer = 0;
+    int timerMax = 20;
+    public override void Update(){
+        if(active && GameController.gameRunning){
+            switchTimer++;
+            if (switchTimer >= timerMax){
+                switchTimer = 0;
+                movingLeft = !movingLeft;
+            }
+            Vector3 oldPos = transform.localPosition;
+            oldPos.x += movingLeft ? leftSpeed : rightSpeed;
+            transform.localPosition = oldPos;
+        }
+    }
+}
+public class Vulture: DamageObstacle{
+    // Up and down
+    float upSpeed = 0.05f;
+    float downSpeed = -0.05f;
+    bool movingUp = true;
+    int switchTimer = 0;
+    int timerMax = 20;
+    public override void Update(){
+        if(active && GameController.gameRunning){
+            switchTimer++;
+            if (switchTimer >= timerMax){
+                switchTimer = 0;
+                movingUp = !movingUp;
+            }
+            Vector3 oldPos = transform.localPosition;
+            oldPos.y += movingUp ? upSpeed : downSpeed;
+            transform.localPosition = oldPos;
+        }
+    }
+}
+public class Snake: DamageObstacle{
+    Animator animator;
+    int timerMax = 30;
+    public int timer = 0;
+
+    public override void Startup(float x, float y, float newSpeed){
+        base.Startup(x,y,newSpeed);
+        animator = GetComponent<Animator>();
+    }
+    public override void Update(){
+        if(active && GameController.gameRunning){
+            timer++;
+            if (timer == timerMax){
+                Attack();
+            }
+        }
+    }
+    void Attack(){
+        if(animator != null){
+
+        }
+    }
+    public void FinishedAttacking(){
+
+    }
+}
+
+public class Meteor: DamageObstacle{
+    protected List<Sprite> sprites = new List<Sprite>();
+    float rotationSpeed = 1.0f;
+    protected const string SPRITEFOLDER = "Assets/Resources/Obstacles/Sprites/";
+    const string DEFAULTSUBFOLDER = "BigMeteor";
+    public override void Startup(float x, float y, float newSpeed){
+        base.Startup(x,y,newSpeed);
+        rotationSpeed -= 2 * rotationSpeed * Random.Range(0,2);
+        //GetSprites(DEFAULTSUBFOLDER);
+        if(TryGetComponent<SpriteRenderer>(out SpriteRenderer renderer)){
+            renderer.sprite = GetRandomSprite();
+        }
+    }
+    public virtual void GetSprites(string subFolder){
+        //Sprite mySprite = Resources.Load<Sprite>("meteorGrey_big1");
+        foreach (string file in System.IO.Directory.GetFiles(SPRITEFOLDER+subFolder)){
+            string resourceFile = file.Replace("Assets/Resources/","");
+            resourceFile = resourceFile.Replace(@"\","/");
+            resourceFile = resourceFile.Replace(".png","");
+            Sprite newSprite = Resources.Load<Sprite>(resourceFile);
+            if(newSprite != null){
+                sprites.Add(newSprite);
+            }
+        }
+    }
+    Sprite GetRandomSprite(){
+        int randInt = Random.Range(0,sprites.Count);
+        if (sprites[randInt] != null){
+            return sprites[randInt];
+        }
+        return null;
+    }
+    public override void Update(){
+        Rotate();
+        base.Update();
+        //transform.RotateAroundLocal() (new Vector3(0.0f, 0.0f, rotationSpeed));
+    }
+    void Rotate(){
+        Vector3 currentRot = transform.localEulerAngles;
+        currentRot.z += rotationSpeed;
+        transform.localEulerAngles = currentRot;
+        //transform.RotateAround(transform.position, transform.up, Time.deltaTime * 90.0f);
+    }
+}
+public class MeteorBig: Meteor{
+    const string SUBFOLDER = "MeteorBig";
+    public override void Startup(float x, float y, float newSpeed){
+        GetSprites(SUBFOLDER);
+        base.Startup(x,y,newSpeed);
+    }
+}
+public class MeteorSmall: Meteor{
+    const string SUBFOLDER = "MeteorSmall";
+    public override void Startup(float x, float y, float newSpeed){
+        GetSprites(SUBFOLDER);
+        base.Startup(x,y,newSpeed);
     }
 }
 public class LevelEnd: Obstacle{

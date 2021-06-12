@@ -48,7 +48,7 @@ public class LevelManager : MonoBehaviour
             {(1,6), new LevelData(1,6, false)},
             {(1,7), new LevelData(1,7, false)},
             {(1,8), new LevelData(1,8, false)},
-            {(2,1), new LevelData(2,1, false)},
+            {(2,1), new LevelData(2,1, true)},
             {(2,2), new LevelData(2,2, false)},
             {(2,3), new LevelData(2,3, false)},
             {(2,4), new LevelData(2,4, false)},
@@ -56,6 +56,22 @@ public class LevelManager : MonoBehaviour
             {(2,6), new LevelData(2,6, false)},
             {(2,7), new LevelData(2,7, false)},
             {(2,8), new LevelData(2,8, false)},
+            {(3,1), new LevelData(1,1, true)},
+            {(3,2), new LevelData(1,2, false)},
+            {(3,3), new LevelData(1,3, false)},
+            {(3,4), new LevelData(1,4, false)},
+            {(3,5), new LevelData(1,5, false)},
+            {(3,6), new LevelData(1,6, false)},
+            {(3,7), new LevelData(1,7, false)},
+            {(3,8), new LevelData(1,8, false)},
+            {(4,1), new LevelData(2,1, true)},
+            {(4,2), new LevelData(2,2, false)},
+            {(4,3), new LevelData(2,3, false)},
+            {(4,4), new LevelData(2,4, false)},
+            {(4,5), new LevelData(2,5, false)},
+            {(4,6), new LevelData(2,6, false)},
+            {(4,7), new LevelData(2,7, false)},
+            {(4,8), new LevelData(2,8, false)},
         };
         return levelData;
     }
@@ -134,6 +150,9 @@ public class LevelManager : MonoBehaviour
     public void LoseLevel(){
         GameController.gameRunning = false;
         ScreenManager.instance.pushScreen(ScreenName.LEVEL_LOST);
+    }
+    public bool WorldExists(int currentWorld){
+        return DoesLevelExist(currentWorld, 1);
     }
 }
 

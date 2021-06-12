@@ -44,10 +44,10 @@ public class ItemManager : MonoBehaviour
     public List<ItemData<Board>> GenerateDefaultBoardData(){
         List<ItemData<Board>> boardData = new List<ItemData<Board>>();
         boardData.Add(new ItemData<Board>(Board.Blue , 0, ItemState.Equipped));
-        boardData.Add(new ItemData<Board>(Board.Magma , 0, ItemState.Unbought));
         boardData.Add(new ItemData<Board>(Board.Ice , 50, ItemState.Unbought));
         boardData.Add(new ItemData<Board>(Board.Lightning , 50, ItemState.Unbought));
         boardData.Add(new ItemData<Board>(Board.Rose , 50, ItemState.Unbought));
+        boardData.Add(new ItemData<Board>(Board.Magma , 100, ItemState.Unbought));
         boardData.Add(new ItemData<Board>(Board.Galactic , 100, ItemState.Unbought));
         return boardData;
     }

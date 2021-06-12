@@ -73,7 +73,10 @@ public class GameController : MonoBehaviour
     void LoadBoard(Board boardType){
         string boardName = boardType.ToString();
         print("Board Name: "+ boardName); 
-        GameObject boardPrefab = Resources.Load<GameObject>(BOARDPATH + boardName);
+        string currentWorld = "World " + PlayerPrefs.GetInt("World",1).ToString() + "/";
+        //currentWorld = "World 1/";
+        
+        GameObject boardPrefab = Resources.Load<GameObject>(BOARDPATH + currentWorld + boardName);
         GameObject boardObject = Instantiate(boardPrefab);
         board = boardObject.GetComponent<BoardController>();
     }
