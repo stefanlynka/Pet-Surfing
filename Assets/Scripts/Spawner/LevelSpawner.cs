@@ -58,7 +58,10 @@ public class LevelSpawner : MonoBehaviour
         string obstacleName = obstacleType.ToString();
         GameObject obstacleObject = LoadObstacle(obstacleName);
         if (obstacleObject != null){
-            Obstacle obstacle = (Obstacle)obstacleObject.AddComponent(obstacleType);
+            Obstacle obstacle = (Obstacle)obstacleObject.GetComponent(obstacleType);
+            if (obstacle == null){
+                obstacle = (Obstacle)obstacleObject.AddComponent(obstacleType);
+            }
             if (obstacle != null) {
                 return obstacle;
             }

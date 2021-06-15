@@ -10,12 +10,12 @@ public class Scroller : MonoBehaviour
     public float windowRange = 20.0f;
     float leftEdge {
         get {
-            return transform.position.x - windowRange;
+            return transform.localPosition.x - windowRange;
         }
     }
     float rightEdge {
         get {
-            return transform.position.x + windowRange;
+            return transform.localPosition.x + windowRange;
         }
     }
     protected List<ScrollObject> objects = new List<ScrollObject>();
@@ -47,13 +47,13 @@ public class Scroller : MonoBehaviour
             }
         }
         foreach(ScrollObject item in objects){
-            Vector3 oldPos = item.renderer.transform.position;
-            item.renderer.transform.position = new Vector3(item.renderer.transform.position.x - speed, oldPos.y, oldPos.z);
+            Vector3 oldPos = item.renderer.transform.localPosition;
+            item.renderer.transform.localPosition = new Vector3(item.renderer.transform.localPosition.x - speed, oldPos.y, oldPos.z);
         }
     }
     protected virtual void RepositionObject(ScrollObject item){
-        Vector3 oldPos = item.renderer.transform.position;
-        item.renderer.transform.position = new Vector3(rightEdge+item.radius, oldPos.y, oldPos.z);
+        Vector3 oldPos = item.renderer.transform.localPosition;
+        item.renderer.transform.localPosition = new Vector3(rightEdge+item.radius, oldPos.y, oldPos.z);
     }
     /*
     void OnDrawGizmos(){
@@ -71,7 +71,7 @@ public class ScrollObject{
     }
     public float rightPoint {
         get {
-            return renderer.transform.position.x + renderer.bounds.extents.x;
+            return renderer.transform.localPosition.x + renderer.bounds.extents.x;
         }
     }
     public ScrollObject(SpriteRenderer spriteRenderer){

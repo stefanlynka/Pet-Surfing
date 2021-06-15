@@ -70,6 +70,9 @@ public class LevelSelectScreen : Screen
             PlayerPrefs.SetInt("Level",levelData.level);
             PlayerPrefs.Save();
             SceneManager.LoadScene("World"+levelData.world.ToString());
+            print("World: "+levelData.world);
+            print("Level: "+levelData.level);
+            
         }
     }
     public void GoBack(){

@@ -16,10 +16,13 @@ public abstract class Obstacle : MonoBehaviour{
     {
         if(active && GameController.gameRunning){
             //transform.Translate(new Vector3(-levelSpeed, 0.0f, 0.0f));
-            Vector3 oldPos = transform.localPosition;
-            oldPos.x -= levelSpeed;
-            transform.localPosition = oldPos;
+            ShiftX(-levelSpeed);
         }
+    }
+    protected void ShiftX(float x){
+        Vector3 oldPos = transform.localPosition;
+        oldPos.x += x;
+        transform.localPosition = oldPos;
     }
     //public virtual void Setup(){}
     public virtual void Startup(float x, float y, float newSpeed){
@@ -71,22 +74,29 @@ public class Seagull: DamageObstacle{
     //Faster to left
     float speed = 0.05f;
     public override void Update(){
+        base.Update();
         if(active && GameController.gameRunning){
             Vector3 oldPos = transform.localPosition;
             oldPos.x -= speed;
             transform.localPosition = oldPos;
         }
     }
+    public override void Startup(float x, float y, float newSpeed){
+        base.Startup(x, y, newSpeed);
+        float distance = (x * (levelSpeed + speed))/levelSpeed;
+        ShiftX(distance - x);
+    }
 }
 
-public class Bat: DamageObstacle{
+public class FieryBat: DamageObstacle{
     // Left and right
-    float leftSpeed = -0.03f;
+    float leftSpeed = -0.01f;
     float rightSpeed = 0.13f;
     bool movingLeft = true;
     int switchTimer = 0;
-    int timerMax = 20;
+    int timerMax = 60;
     public override void Update(){
+        base.Update();
         if(active && GameController.gameRunning){
             switchTimer++;
             if (switchTimer >= timerMax){
@@ -101,12 +111,13 @@ public class Bat: DamageObstacle{
 }
 public class Vulture: DamageObstacle{
     // Up and down
-    float upSpeed = 0.05f;
-    float downSpeed = -0.05f;
+    float upSpeed = 0.04f;
+    float downSpeed = -0.04f;
     bool movingUp = true;
     int switchTimer = 0;
-    int timerMax = 20;
+    int timerMax = 60;
     public override void Update(){
+        base.Update();
         if(active && GameController.gameRunning){
             switchTimer++;
             if (switchTimer >= timerMax){
@@ -119,32 +130,7 @@ public class Vulture: DamageObstacle{
         }
     }
 }
-public class Snake: DamageObstacle{
-    Animator animator;
-    int timerMax = 30;
-    public int timer = 0;
 
-    public override void Startup(float x, float y, float newSpeed){
-        base.Startup(x,y,newSpeed);
-        animator = GetComponent<Animator>();
-    }
-    public override void Update(){
-        if(active && GameController.gameRunning){
-            timer++;
-            if (timer == timerMax){
-                Attack();
-            }
-        }
-    }
-    void Attack(){
-        if(animator != null){
-
-        }
-    }
-    public void FinishedAttacking(){
-
-    }
-}
 
 public class Meteor: DamageObstacle{
     protected List<Sprite> sprites = new List<Sprite>();

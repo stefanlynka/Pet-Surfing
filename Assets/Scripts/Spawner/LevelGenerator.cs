@@ -61,11 +61,19 @@ public class LevelGenerator : MonoBehaviour
 
         
         for(int i =0; i< 10; i++){
-            newLevel.AddObstacle(20, i, typeof(Coin));
+            //newLevel.AddObstacle(20, i, typeof(Coin));
         }
         //newLevel.AddObstacle(15, 3, typeof(Cactus));
-        newLevel.AddObstacle(15, 2, typeof(MeteorBig));
-        newLevel.AddObstacle(15, 5, typeof(MeteorSmall));
+        //newLevel.AddObstacle(15, 2, typeof(Snake));
+        //newLevel.AddObstacle(15, 5, typeof(MeteorSmall));
+
+        //newLevel.AddObstacle(25, 2, typeof(Snake));
+        //newLevel.AddObstacle(35, 2, typeof(FieryBat));
+        //newLevel.AddObstacle(45, 2, typeof(Vulture));
+
+        newLevel.AddObstacle(25, 2, typeof(Snake));
+        newLevel.AddObstacle(25, 2, typeof(Vulture));
+        newLevel.AddObstacle(25, 2, typeof(Coin));
         /*
         newLevel.AddObstacle(20, 3, () => {
             Coin obs = (Coin)GenerateObstacle(typeof(Coin));

@@ -6,8 +6,8 @@ public class ScrollerStitched : Scroller
 {
     
     protected override void RepositionObject(ScrollObject item){
-        Vector3 oldPos = item.renderer.transform.position;
-        item.renderer.transform.position = new Vector3(FindRightmostPoint()+item.radius, oldPos.y, oldPos.z);
+        Vector3 oldPos = item.renderer.transform.localPosition;
+        item.renderer.transform.localPosition = new Vector3(FindRightmostPoint()+item.radius, oldPos.y, oldPos.z);
     }
     
     float FindRightmostPoint(){
